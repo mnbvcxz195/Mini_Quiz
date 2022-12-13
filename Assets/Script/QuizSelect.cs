@@ -11,31 +11,61 @@ public enum QuizType
 
 public class QuizSelect : MonoBehaviour
 {
-    public Button[] quizSelect = null;    
+    public GameObject obj;
+    public Button[] quizSelect = null;
+    public int Q_Type;
+
+    #region Singletone
+    public static QuizSelect instance = null;
+
+    private void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+        }
+
+        else
+        {
+            if (instance != this)
+                Destroy(this.gameObject);
+        }
+
+    }
+    #endregion
 
     private void Start()
     {
         for (int i = 0; i < quizSelect.Length; i++)
         {
             QuizType type = (QuizType)i;
-            quizSelect[i].onClick.AddListener(()=> {
+            quizSelect[i].onClick.AddListener(() => {
                 Select(type);
             });
         }
     }
 
-    public void Select(QuizType quizType)
+    public int Select(QuizType quizType)
     {
         if(quizType == QuizType.Common)
         {
             gameObject.SetActive(false);
+            obj.SetActive(true);
+            Q_Type = 0;
             Debug.Log(quizType);
         }
 
         if(quizType == QuizType.Non)
         {
             gameObject.SetActive(false);
+            obj.SetActive(true);
+            Q_Type = 1;
             Debug.Log(quizType);
         }
+
+       QuizManager.instance.MakeQuestion();
+
+        return Q_Type;
     }
+
 }
